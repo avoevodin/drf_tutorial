@@ -140,7 +140,7 @@ class Rating(models.Model):
         verbose_name_plural = 'Ratings'
 
 
-class Reviews(models.Model):
+class Review(models.Model):
     """Reviews
 
     """
