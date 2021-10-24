@@ -149,7 +149,7 @@ class Review(models.Model):
     text = models.TextField('Text', max_length=5000)
     parent = models.ForeignKey(
         'self', verbose_name='Parent', on_delete=models.SET_NULL,
-        blank=True, null=True
+        blank=True, null=True, related_name='children'
     )
     movie = models.ForeignKey(
         Movie, verbose_name='movie', on_delete=models.CASCADE,
