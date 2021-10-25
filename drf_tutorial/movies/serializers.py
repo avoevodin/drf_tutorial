@@ -83,7 +83,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
     """
     category = serializers.SlugRelatedField(slug_field='name', read_only=True)
     directors = ActorDetailSerializer(read_only=True, many=True)
-    actors = ActorDetailSerializer(slug_field='name', read_only=True, many=True)
+    actors = ActorDetailSerializer(read_only=True, many=True)
     genres = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
     reviews = ReviewSerializer(many=True)
 
@@ -101,7 +101,7 @@ class CreateRatingSerializer(serializers.ModelSerializer):
         fields = ('star', 'movie')
 
     def create(self, validated_data):
-        rating = Rating.objects.update_or_create(
+        rating, upd_or_create = Rating.objects.update_or_create(
             ip=validated_data.get('ip', None),
             movie=validated_data.get('movie', None),
             defaults={'star': validated_data.get('star')}
