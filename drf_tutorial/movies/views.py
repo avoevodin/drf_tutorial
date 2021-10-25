@@ -1,6 +1,8 @@
 from django.db.models import Count, Q, Sum, F
+from rest_framework import permissions
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Movie, Actor
 from .serializers import (
@@ -16,6 +18,7 @@ class MovieListView(ListAPIView):
     serializer_class = MovieListSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_class = MovieFilter
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         movies = Movie.objects.filter(draft=False).annotate(
