@@ -3,6 +3,7 @@ from rest_framework import permissions
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ViewSet, ReadOnlyModelViewSet, ModelViewSet
 
 from .models import Movie, Actor
 from .serializers import (
@@ -13,12 +14,10 @@ from .serializers import (
 from .service import get_client_ip, MovieFilter
 
 
-class MovieListView(ListAPIView):
+class MovieViewSet(ReadOnlyModelViewSet):
     """Movie list api view"""
-    serializer_class = MovieListSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_class = MovieFilter
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         movies = Movie.objects.filter(draft=False).annotate(
@@ -30,21 +29,21 @@ class MovieListView(ListAPIView):
         )
         return movies
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return MovieListSerializer
+        elif self.action == 'retrieve':
+            return MovieDetailSerializer
 
-class MovieDetailView(RetrieveAPIView):
-    """Movie detail view"""
-    serializer_class = MovieDetailSerializer
-    queryset = Movie.objects.filter(draft=False)
 
-
-class ReviewCreateView(CreateAPIView):
+class ReviewCreateView(ModelViewSet):
     """Review create view
 
     """
     serializer_class = ReviewCreateSerializer
 
 
-class AddStarRatingView(CreateAPIView):
+class AddStarRatingView(ModelViewSet):
     """Adding rating for movie
 
     """
@@ -54,17 +53,14 @@ class AddStarRatingView(CreateAPIView):
         serializer.save(ip=get_client_ip(self.request))
 
 
-class ActorsListView(ListAPIView):
+class ActorsViewSet(ReadOnlyModelViewSet):
     """Actors list view
 
     """
     queryset = Actor.objects.all()
-    serializer_class = ActorListSerializer
 
-
-class ActorDetailView(RetrieveAPIView):
-    """Actors detail view
-
-    """
-    queryset = Actor.objects.all()
-    serializer_class = ActorDetailSerializer
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ActorListSerializer
+        elif self.action == 'retrieve':
+            return ActorDetailSerializer
