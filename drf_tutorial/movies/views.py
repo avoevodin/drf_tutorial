@@ -1,9 +1,6 @@
 from django.db.models import Count, Q, Sum, F
-from rest_framework import permissions
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ViewSet, ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 
 from .models import Movie, Actor
 from .serializers import (
